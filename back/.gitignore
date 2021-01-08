@@ -2,3 +2,4 @@ __pycache__/
 .env
 myvenv/
 .idea/
+/进度.md
