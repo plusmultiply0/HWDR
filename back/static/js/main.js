@@ -222,6 +222,7 @@ class Main {
         // 将当前小/28x28canvas画布？的内容链接/插入到显示的img元素内
         // 将在28x28canvas画好的结果放进去，
         img.src = this.canvas.toDataURL();
+        // img.download="new-image-name.jpg"
     }
 }
 
