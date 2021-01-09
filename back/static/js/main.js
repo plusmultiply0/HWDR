@@ -1,6 +1,9 @@
 /* global $ */
 class Main {
     constructor() {
+        //to store input array
+        this.datastore = [];
+        this.datarray = [];
         // 获取html中的两个canvas元素
         this.canvas = document.getElementById('main');
         this.input = document.getElementById('input');
@@ -37,27 +40,26 @@ class Main {
 
         // 设置线段的宽度为0.05
         this.ctx.lineWidth = 0.05;
-        for (var i = 0; i < 27; i++) {
-            // 绘画网格的竖线
-            // 开始创建新路径
-            this.ctx.beginPath();
-            // 将一个新的子路径的起始点移动到(x，y)坐标的方法
-            this.ctx.moveTo((i + 1) * 16,   0);
-            // 使用直线连接子路径的终点到x，y坐标的方法（并不会真正地绘制）
-            this.ctx.lineTo((i + 1) * 16, 449);
-            // 将笔点返回到当前子路径起始点的方法。它尝试从当前点到起始点绘制一条直线。 
-            // 如果图形已经是封闭的或者只有一个点，那么此方法不会做任何操作。
-            this.ctx.closePath();
-            // 使用非零环绕规则，根据当前的画线样式，绘制当前或已经存在的路径的方法。
-            this.ctx.stroke();
-
-            // 绘画网格的横线
-            this.ctx.beginPath();
-            this.ctx.moveTo(  0, (i + 1) * 16);
-            this.ctx.lineTo(449, (i + 1) * 16);
-            this.ctx.closePath();
-            this.ctx.stroke();
-        }
+        // for (var i = 0; i < 27; i++) {
+        //     // 绘画网格的竖线
+        //     // 开始创建新路径
+        //     this.ctx.beginPath();
+        //     // 将一个新的子路径的起始点移动到(x，y)坐标的方法
+        //     this.ctx.moveTo((i + 1) * 16,   0);
+        //     // 使用直线连接子路径的终点到x，y坐标的方法（并不会真正地绘制）
+        //     this.ctx.lineTo((i + 1) * 16, 449);
+        //     // 将笔点返回到当前子路径起始点的方法。它尝试从当前点到起始点绘制一条直线。
+        //     // 如果图形已经是封闭的或者只有一个点，那么此方法不会做任何操作。
+        //     this.ctx.closePath();
+        //     // 使用非零环绕规则，根据当前的画线样式，绘制当前或已经存在的路径的方法。
+        //     this.ctx.stroke();
+        //     // 绘画网格的横线
+        //     this.ctx.beginPath();
+        //     this.ctx.moveTo(  0, (i + 1) * 16);
+        //     this.ctx.lineTo(449, (i + 1) * 16);
+        //     this.ctx.closePath();
+        //     this.ctx.stroke();
+        // }
         // 绘画初始的28x28样式
         this.drawInput();
         $('#output td').text('').removeClass('success');
@@ -84,8 +86,8 @@ class Main {
         if (this.drawing) {
             // 得到当前光标在canvas中坐标
             var curr = this.getPosition(e.clientX, e.clientY);
-            // 设置线宽/画笔宽度
-            this.ctx.lineWidth = 16;
+            // 设置线宽/画笔宽度**
+            this.ctx.lineWidth = 36;
             // 指定如何绘制每一条线段末端的属性，有点像画笔形状
             this.ctx.lineCap = 'round';
             // 开始画/开始路径
@@ -143,7 +145,7 @@ class Main {
             // ImageData.data 属性，返回 Uint8ClampedArray ，
             // 描述一个一维数组，包含以 RGBA 顺序的数据，数据使用  0 至 255（包含）的整数表示。
             var data = small.getImageData(0, 0, 28, 28).data;
-
+            console.log(data)
             // 待仔细看
             // 绘制变换为28x28像素内容，
             for (var i = 0; i < 28; i++) {
@@ -151,17 +153,32 @@ class Main {
                     // n每次增加4x
                     var n = 4 * (i * 28 + j);
                     // 获取领近的data值，除以三；放入inputs数组
-                    inputs[i * 28 + j] = (data[n + 0] + data[n + 1] + data[n + 2]) / 3;
+                    inputs[i * 28 + j] = (data[n] + data[n + 1] + data[n + 2]) / 3;
                     // 获取data数组的值，生成RGB颜色
-                    ctx.fillStyle = 'rgb(' + [data[n + 0], data[n + 1], data[n + 2]].join(',') + ')';
-                    
+                    ctx.fillStyle = 'rgb(' + [data[n], data[n + 1], data[n + 2]].join(',') + ')';
+
                     ctx.fillRect(j * 5, i * 5, 5, 5);
                 }
             }
             // 输出input数组
-
-            console.log(inputs);
-            console.log(JSON.stringify(inputs));
+            this.datastore.push(inputs);
+            this.datarray.push(data);
+            var count = 0;
+            for(var p = 0 ; p<this.datarray.length;p++){
+                if (data === this.datarray[p]){
+                    count++;
+                }
+            }
+            console.log('count: '+count);
+            //验证输入是否相同
+            console.log(this.datastore)
+            for(var i = 0 ; i<this.datastore.length;i++){
+                if (inputs === this.datastore[i]){
+                    console.log(i)
+                }
+            }
+            // console.log(inputs);
+            // console.log(JSON.stringify(inputs)[10]);
             
             // 解构input数组，最小值为255，就直接返回？
             if (Math.min(...inputs) === 255) {
@@ -176,30 +193,31 @@ class Main {
                 data: JSON.stringify(inputs),
                 success: (data) => {
                     // 遍历result数组，填充预测结果/分数/概率
-                    for (let i = 0; i < 2; i++) {
+                    for (let i = 0; i < 1; i++) {
                         var max = 0;
                         var max_index = 0;
                         // 遍历result数组，填充预测结果/分数/概率
                         // 一行为一个模型的预测结果/分数
                         for (let j = 0; j < 10; j++) {
                             var value = Math.round(data.results[i][j] * 1000);
+                            console.log(data.results[0][0][0])
                             // 更新最大值及索引
                             if (value > max) {
                                 max = value;
                                 max_index = j;
                             }
                             // 获取value的长度
-                            var digits = String(value).length;
-                            // 位数不足/value比较小的情况？下，value前添加0！！！
-                            for (var k = 0; k < 3 - digits; k++) {
-                                value = '0' + value;
-                            }
-                            // 设置最后的显示结果/概率
+                            // var digits = String(value).length;
+                            // // 位数不足/value比较小的情况？下，value前添加0！！！
+                            // for (var k = 0; k < 3 - digits; k++) {
+                            //     value = '0' + value;
+                            // }
+                            // // 设置最后的显示结果/概率
                             var text = '0.' + value;
-                            // 特别准确的情况下，设置为1.000
-                            if (value > 999) {
-                                text = '1.000';
-                            }
+                            // // 特别准确的情况下，设置为1.000
+                            // if (value > 999) {
+                            //     text = '1.000';
+                            // }
                             // 往结果0-9里填值——分别由不同的模型处理结果
                             $('#output tr').eq(j + 1).find('td').eq(i).text(text);
                         }
