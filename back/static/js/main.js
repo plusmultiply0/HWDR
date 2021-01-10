@@ -27,7 +27,6 @@ class Main {
     }
     initialize() {
         // 绘制画布——用于画图的界面
-
         // 填充颜色为白色
         this.ctx.fillStyle = '#FFFFFF';
         // 填充矩形
@@ -40,28 +39,28 @@ class Main {
 
         // 设置线段的宽度为0.05
         this.ctx.lineWidth = 0.05;
-        // for (var i = 0; i < 27; i++) {
-        //     // 绘画网格的竖线
-        //     // 开始创建新路径
-        //     this.ctx.beginPath();
-        //     // 将一个新的子路径的起始点移动到(x，y)坐标的方法
-        //     this.ctx.moveTo((i + 1) * 16,   0);
-        //     // 使用直线连接子路径的终点到x，y坐标的方法（并不会真正地绘制）
-        //     this.ctx.lineTo((i + 1) * 16, 449);
-        //     // 将笔点返回到当前子路径起始点的方法。它尝试从当前点到起始点绘制一条直线。
-        //     // 如果图形已经是封闭的或者只有一个点，那么此方法不会做任何操作。
-        //     this.ctx.closePath();
-        //     // 使用非零环绕规则，根据当前的画线样式，绘制当前或已经存在的路径的方法。
-        //     this.ctx.stroke();
-        //     // 绘画网格的横线
-        //     this.ctx.beginPath();
-        //     this.ctx.moveTo(  0, (i + 1) * 16);
-        //     this.ctx.lineTo(449, (i + 1) * 16);
-        //     this.ctx.closePath();
-        //     this.ctx.stroke();
-        // }
+        for (var i = 0; i < 27; i++) {
+            // 绘画网格的竖线
+            // 开始创建新路径
+            this.ctx.beginPath();
+            // 将一个新的子路径的起始点移动到(x，y)坐标的方法
+            this.ctx.moveTo((i + 1) * 16,   0);
+            // 使用直线连接子路径的终点到x，y坐标的方法（并不会真正地绘制）
+            this.ctx.lineTo((i + 1) * 16, 449);
+            // 将笔点返回到当前子路径起始点的方法。它尝试从当前点到起始点绘制一条直线。
+            // 如果图形已经是封闭的或者只有一个点，那么此方法不会做任何操作。
+            this.ctx.closePath();
+            // 使用非零环绕规则，根据当前的画线样式，绘制当前或已经存在的路径的方法。
+            this.ctx.stroke();
+            // 绘画网格的横线
+            this.ctx.beginPath();
+            this.ctx.moveTo(  0, (i + 1) * 16);
+            this.ctx.lineTo(449, (i + 1) * 16);
+            this.ctx.closePath();
+            this.ctx.stroke();
+        }
         // 绘画初始的28x28样式
-        this.drawInput();
+        // this.drawInput();
         $('#output td').text('').removeClass('success');
     }
     onMouseDown(e) {
@@ -194,13 +193,14 @@ class Main {
                 success: (data) => {
                     // 遍历result数组，填充预测结果/分数/概率
                     for (let i = 0; i < 1; i++) {
-                        var max = 0;
+                        //设为返回值第一个数|返回分数有正有负
+                        var max = data.results[i][0];
                         var max_index = 0;
                         // 遍历result数组，填充预测结果/分数/概率
                         // 一行为一个模型的预测结果/分数
                         for (let j = 0; j < 10; j++) {
-                            var value = Math.round(data.results[i][j] * 1000);
-                            console.log(data.results[0][0][0])
+                            var value = Math.round(data.results[i][j]);
+                            console.log(value)
                             // 更新最大值及索引
                             if (value > max) {
                                 max = value;
@@ -213,7 +213,11 @@ class Main {
                             //     value = '0' + value;
                             // }
                             // // 设置最后的显示结果/概率
-                            var text = '0.' + value;
+                            var text = value;
+                            // 保持数字对其
+                            // if (text>0){
+                            //     text = '  '+text;
+                            // }
                             // // 特别准确的情况下，设置为1.000
                             // if (value > 999) {
                             //     text = '1.000';
@@ -225,6 +229,7 @@ class Main {
                         for (let j = 0; j < 10; j++) {
                             if (j === max_index) {
                                 $('#output tr').eq(j + 1).find('td').eq(i).addClass('success');
+                                console.log('ok:'+j);
                             } else {
                                 $('#output tr').eq(j + 1).find('td').eq(i).removeClass('success');
                             }

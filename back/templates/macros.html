@@ -10,3 +10,11 @@
         <link rel="icon" href="{{ filename_or_url }}">
     {%- endif %}
 {% endmacro %}
+
+{% macro copytrtd(num) %}
+    <tr>
+        <th>{{num}}</th>
+        <td></td>
+        <td></td>
+    </tr>
+{% endmacro %}

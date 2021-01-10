@@ -75,18 +75,19 @@ def center_image(img):
 def to_predict(input):
     # 加载模型
     # svm_model_all_traing_loaded = joblib.load("svm_model_onethousand_training.pkl")
-    sgd_model_1000_train_load = joblib.load("sgd_model_1000_training.pkl")
+    sgd_model_all_train_load = joblib.load("sgd_model_all_training.pkl")
     #预处理
     # 黑底白字+居中
     deal_input = center_image(input).reshape(1,784)
 
     # 尝试预测
     # res = svm_model_all_traing_loaded.predict(deal_input)
-    res = sgd_model_1000_train_load.predict(deal_input)
+    res = sgd_model_all_train_load.predict(deal_input)
     print(res)
     # score = svm_model_all_traing_loaded.decision_function(deal_input)
-    score = sgd_model_1000_train_load.decision_function(deal_input)
+    score = sgd_model_all_train_load.decision_function(deal_input)
     print(score[0])
+    joblib.dump(sgd_model_all_train_load, "sgd_model_all_training.pkl")
     return score[0]
 
 # PS:基本上移过来保存的模型，写个函数加载并且调方法预测就可以。
