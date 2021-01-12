@@ -1,9 +1,6 @@
 /* global $ */
 class Main {
     constructor() {
-        //to store input array
-        this.datastore = [];
-        this.datarray = [];
         // 获取html中的两个canvas元素
         this.canvas = document.getElementById('main');
         this.input = document.getElementById('input');
@@ -81,7 +78,6 @@ class Main {
     }
     onMouseMove(e) {
         // 只有在摁下鼠标左键才有效
-        // 
         if (this.drawing) {
             // 得到当前光标在canvas中坐标
             var curr = this.getPosition(e.clientX, e.clientY);
@@ -126,7 +122,6 @@ class Main {
         var img = new Image();
         // 元素加载时，触发事件
         img.onload = () => {
-
             var inputs = [];
             // 创建新的canvas元素，并获取上下文
             var small = document.createElement('canvas').getContext('2d');
@@ -144,7 +139,6 @@ class Main {
             // ImageData.data 属性，返回 Uint8ClampedArray ，
             // 描述一个一维数组，包含以 RGBA 顺序的数据，数据使用  0 至 255（包含）的整数表示。
             var data = small.getImageData(0, 0, 28, 28).data;
-            console.log(data)
             // 待仔细看
             // 绘制变换为28x28像素内容，
             for (var i = 0; i < 28; i++) {
@@ -155,30 +149,9 @@ class Main {
                     inputs[i * 28 + j] = (data[n] + data[n + 1] + data[n + 2]) / 3;
                     // 获取data数组的值，生成RGB颜色
                     ctx.fillStyle = 'rgb(' + [data[n], data[n + 1], data[n + 2]].join(',') + ')';
-
                     ctx.fillRect(j * 5, i * 5, 5, 5);
                 }
             }
-            // 输出input数组
-            this.datastore.push(inputs);
-            this.datarray.push(data);
-            var count = 0;
-            for(var p = 0 ; p<this.datarray.length;p++){
-                if (data === this.datarray[p]){
-                    count++;
-                }
-            }
-            console.log('count: '+count);
-            //验证输入是否相同
-            console.log(this.datastore)
-            for(var i = 0 ; i<this.datastore.length;i++){
-                if (inputs === this.datastore[i]){
-                    console.log(i)
-                }
-            }
-            // console.log(inputs);
-            // console.log(JSON.stringify(inputs)[10]);
-            
             // 解构input数组，最小值为255，就直接返回？
             if (Math.min(...inputs) === 255) {
                 return;
@@ -199,29 +172,14 @@ class Main {
                         // 遍历result数组，填充预测结果/分数/概率
                         // 一行为一个模型的预测结果/分数
                         for (let j = 0; j < 10; j++) {
-                            var value = Math.round(data.results[i][j]);
+                            var value = Math.round(data.results[i][j]*1000);
                             console.log(value)
                             // 更新最大值及索引
                             if (value > max) {
                                 max = value;
                                 max_index = j;
                             }
-                            // 获取value的长度
-                            // var digits = String(value).length;
-                            // // 位数不足/value比较小的情况？下，value前添加0！！！
-                            // for (var k = 0; k < 3 - digits; k++) {
-                            //     value = '0' + value;
-                            // }
-                            // // 设置最后的显示结果/概率
                             var text = value;
-                            // 保持数字对其
-                            // if (text>0){
-                            //     text = '  '+text;
-                            // }
-                            // // 特别准确的情况下，设置为1.000
-                            // if (value > 999) {
-                            //     text = '1.000';
-                            // }
                             // 往结果0-9里填值——分别由不同的模型处理结果
                             $('#output tr').eq(j + 1).find('td').eq(i).text(text);
                         }
