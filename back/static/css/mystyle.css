@@ -3,3 +3,9 @@
     color: red;
     border: 2px solid red;
 }
+.aboutlink{
+    text-decoration: none;
+    color: #636464;
+    font-weight: bolder;
+    font-size: 1.1em;
+}
