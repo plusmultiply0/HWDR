@@ -34,11 +34,11 @@ back/                              #项目文件夹名
     python -m venv myvenv     #创建虚拟环境，需要提前在系统上安装配置好 Python
     myvenv\scripts\activate   #激活虚拟环境 in cmd
     ```
-3. 初始化项目(激活虚拟环境后，在back目录下)
+3. 初始化项目，安装运行项目所需依赖(激活虚拟环境后，在back目录下)
     ```bash
     pip install -r requirements.txt #根据依赖表安装，建议安装前切换国内镜像源
     ```
-5. 运行项目
+4. 运行项目
     ```bash
     # 运行项目于 http://127.0.0.1:5000/（打开浏览器输入此地址，就可以看到）
     flask run
@@ -49,3 +49,6 @@ back/                              #项目文件夹名
 有问题欢迎提 [issue](https://github.com/plusmultiply0/db-big-assignment/issues) 或者 [email](kimzhou36@foxmail.com)
 
 觉得做的还可以的话，麻烦右上角点一下star:star:
+
+## 参考
+- [前端代码参考](https://github.com/sugyan/tensorflow-mnist)
