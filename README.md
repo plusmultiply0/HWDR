@@ -20,5 +20,4 @@ igitignore		#忽略提交到git的文件
    - 因为是国外网站，网速可能比较慢:P
 
 4. 参考
-   - [算法画图代码参考](https://github.com/ageron/handson-ml2/blob/master/03_classification.ipynb) 
 
